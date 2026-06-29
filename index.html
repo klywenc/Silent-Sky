@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BeatOverlay</title>
+    <link rel="stylesheet" href="/src/styles/base.css" />
+    <link rel="stylesheet" href="/src/styles/theme.css" />
+  </head>
+  <body>
+    <div id="overlay" class="overlay">
+      <div class="toolbar" data-tauri-drag-region>
+        <span class="toolbar__title" data-tauri-drag-region>BeatOverlay</span>
+        <div class="toolbar__actions">
+          <button id="btn-move" class="tbtn" title="Move window (hold &amp; drag)">✥</button>
+          <button id="btn-theme" class="tbtn" title="Toggle light/dark theme">☀</button>
+          <button id="btn-click" class="tbtn" title="Toggle click-through (F8)">◉</button>
+          <button id="btn-settings" class="tbtn" title="Settings (F9)">⚙</button>
+        </div>
+      </div>
+
+      <main class="panels">
+        <section id="scores" class="scores" aria-label="Recent scores"></section>
+        <section id="controller" class="controller" aria-label="Controller"></section>
+      </main>
+
+      <section id="settings" class="settings" aria-label="Settings">
+        <div class="settings__head">
+          <button id="btn-back" class="tbtn tbtn--text">← Back</button>
+          <h2 class="settings__title">Settings</h2>
+        </div>
+
+        <h3 class="settings__section">Controller input</h3>
+        <div class="settings__row">
+          <label for="gp-select">Gamepad</label>
+          <select id="gp-select"></select>
+        </div>
+        <div id="bind-list" class="bind-list"></div>
+        <div class="settings__row">
+          <label for="scr-sens">Scratch sensitivity</label>
+          <input id="scr-sens" type="range" min="0.004" max="0.08" step="0.002" />
+          <span id="scr-sens-val" class="muted">—</span>
+        </div>
+        <p class="settings__raw">Signal: <span id="raw-readout">—</span></p>
+        <p class="settings__hint">
+          Click “Bind”, then press a button / move the scratch on the controller.
+          Esc cancels.
+        </p>
+
+        <h3 class="settings__section">Attach to game</h3>
+        <div class="settings__row">
+          <label><input type="checkbox" id="at-enabled" /> Enabled</label>
+          <span id="at-status" class="at-status">—</span>
+        </div>
+        <div class="settings__row">
+          <label for="at-title">Window title</label>
+          <input id="at-title" type="text" placeholder="e.g. LR2oraja" />
+        </div>
+        <div class="settings__row">
+          <label for="at-anchor">Anchor</label>
+          <select id="at-anchor">
+            <option value="top-right">top right</option>
+            <option value="top-left">top left</option>
+            <option value="bottom-right">bottom right</option>
+            <option value="bottom-left">bottom left</option>
+          </select>
+        </div>
+        <div class="settings__row">
+          <label><input type="checkbox" id="at-hide" /> Hide when game is inactive</label>
+        </div>
+
+        <h3 class="settings__section">Score database (LR2oraja)</h3>
+        <div class="settings__row">
+          <label for="db-root">Folder</label>
+          <input id="db-root" type="text" placeholder="e.g. D:\LR2oraja" />
+          <button id="db-save" class="btn">Load</button>
+        </div>
+        <p class="settings__hint">
+          Point to the LR2oraja folder (with <code>songdata.db</code> and
+          <code>player\…\scoredatalog.db</code>). Titles and difficulty tables are
+          matched by hash from <code>song</code> and <code>table\*.bmt</code>.
+        </p>
+        <p class="settings__raw">Database: <span id="db-status">—</span></p>
+        <div class="settings__row">
+          <button id="db-diag-btn" class="btn">Diagnostics</button>
+          <span class="settings__hint">dumps schema + folders</span>
+        </div>
+        <pre id="db-diag" class="db-diag"></pre>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+:root {
+  --font: "Segoe UI", system-ui, sans-serif;
+  --fg: #eef2ff;
+  --radius: 12px;
+  --gap: 12px;
+  --overlay-pad: 12px;
+  --accent: #8fe3ff;
+
+  --toolbar-bg: rgba(0, 0, 0, 0.4);
+  --toolbar-fg: rgba(255, 255, 255, 0.85);
+  --panel-bg: rgba(8, 10, 18, 0.55);
+  --settings-bg: rgba(6, 8, 14, 0.97);
+  --row-bg: rgba(255, 255, 255, 0.04);
+  --diff-fg: #8be9fd;
+
+  --btn-bg: rgba(255, 255, 255, 0.1);
+  --btn-hover: rgba(255, 255, 255, 0.2);
+  --btn-fg: #ffffff;
+  --input-bg: rgba(255, 255, 255, 0.08);
+  --input-border: rgba(255, 255, 255, 0.15);
+
+  --tbl-bg: rgba(120, 160, 255, 0.18);
+  --tbl-fg: #cfe0ff;
+
+  --key-w: 28px;
+  --key-h: 38px;
+  --key-gap: 8px;
+  --key-radius: 5px;
+  --key-bg: #4a5468;
+  --key-active-bg: #eaffff;
+  --key-glow: rgba(150, 230, 255, 0.95);
+
+  --scratch-size: 120px;
+  --scratch-ring: #c8202a;
+  --scratch-ring-w: 8px;
+  --scratch-glow: #ff3b46;
+  --needle-color: #f4f6fb;
+  --needle-w: 12px;
+
+  --stats-fg: #ffffff;
+  --stats-accent: #ff5d5d;
+
+  --click-through-opacity: 0.9;
+}
+
+body.theme-light {
+  --fg: #12151c;
+  --accent: #19b6ff;
+
+  --toolbar-bg: rgba(255, 255, 255, 0.62);
+  --toolbar-fg: #1a1f2b;
+  --panel-bg: rgba(244, 247, 252, 0.92);
+  --settings-bg: rgba(248, 250, 253, 0.98);
+  --row-bg: rgba(0, 0, 0, 0.04);
+  --diff-fg: #0a84c2;
+
+  --btn-bg: rgba(0, 0, 0, 0.08);
+  --btn-hover: rgba(0, 0, 0, 0.16);
+  --btn-fg: #12151c;
+  --input-bg: rgba(0, 0, 0, 0.05);
+  --input-border: rgba(0, 0, 0, 0.15);
+
+  --tbl-bg: rgba(40, 90, 200, 0.14);
+  --tbl-fg: #1c3e8c;
+
+  --key-bg: #c2cad8;
+  --key-active-bg: #19b6ff;
+  --key-glow: rgba(25, 182, 255, 0.7);
+
+  --needle-color: #2a2f3a;
+
+  --stats-fg: #12151c;
+  --stats-accent: #e0354a;
+}
+
+.score[data-lamp="FULL_COMBO"] { --lamp-color: #2bb8e6; }
+.score[data-lamp="EX_HARD"]    { --lamp-color: #e0a800; }
+.score[data-lamp="HARD"]       { --lamp-color: #e64545; }
+.score[data-lamp="NORMAL"]     { --lamp-color: #2bbd52; }
+.score[data-lamp="EASY"]       { --lamp-color: #36c236; }
+.score[data-lamp="ASSIST"]     { --lamp-color: #9a4ddb; }
+.score[data-lamp="FAILED"]     { --lamp-color: #7a8294; }
+.score[data-lamp="NO_PLAY"]    { --lamp-color: transparent; }
