@@ -68,6 +68,29 @@ pub fn start(app: AppHandle, state: &AttachState) {
 pub fn start(_app: AppHandle, _state: &AttachState) {}
 
 #[cfg(windows)]
+pub fn set_no_activate(w: &WebviewWindow, enabled: bool) {
+    use windows::Win32::UI::WindowsAndMessaging::{
+        GetWindowLongPtrW, SetWindowLongPtrW, GWL_EXSTYLE, WS_EX_NOACTIVATE,
+    };
+    if let Ok(h) = w.hwnd() {
+        let hwnd = HWND(h.0);
+        unsafe {
+            let mut ex = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
+            let flag = WS_EX_NOACTIVATE.0 as isize;
+            if enabled {
+                ex |= flag;
+            } else {
+                ex &= !flag;
+            }
+            SetWindowLongPtrW(hwnd, GWL_EXSTYLE, ex);
+        }
+    }
+}
+
+#[cfg(not(windows))]
+pub fn set_no_activate(_w: &WebviewWindow, _enabled: bool) {}
+
+#[cfg(windows)]
 fn tick(app: &AppHandle, w: &WebviewWindow, our_hwnd: isize, c: &AttachConfig) {
     let fg = unsafe { GetForegroundWindow() };
     let fg_id = fg.0 as isize;

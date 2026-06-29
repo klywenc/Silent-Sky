@@ -8,7 +8,7 @@ use std::sync::{Arc, Mutex};
 use attach::{AttachConfig, AttachState};
 use db::{DbConfig, DbState, ScoreRow};
 use input::{InputState, Mapping};
-use tauri::{AppHandle, Manager, State};
+use tauri::{AppHandle, Emitter, Manager, State};
 
 fn config_file(app: &AppHandle, name: &str) -> Option<PathBuf> {
     app.path().app_config_dir().ok().map(|d| d.join(name))
@@ -34,6 +34,51 @@ fn save_json<T: serde::Serialize>(app: &AppHandle, name: &str, value: &T) -> std
         std::fs::write(p, json)?;
     }
     Ok(())
+}
+
+fn css_path(app: &AppHandle) -> Option<PathBuf> {
+    config_file(app, "user.css")
+}
+
+fn start_css_watch(app: AppHandle) {
+    let Some(path) = css_path(&app) else { return };
+    if !path.exists() {
+        if let Some(dir) = path.parent() {
+            let _ = std::fs::create_dir_all(dir);
+        }
+        let template = "/* SilentSky custom CSS. Edit and save — changes apply live.\n   Override theme variables or any rule, e.g.:\n     :root { --accent: #ff64c8; }\n     .key.is-active { background: #ff64c8; box-shadow: 0 0 16px #ff64c8; }\n     .scratch__ring { border-color: #ff64c8; }\n*/\n";
+        let _ = std::fs::write(&path, template);
+    }
+    std::thread::spawn(move || {
+        let mut last: Option<std::time::SystemTime> = None;
+        loop {
+            if let Ok(meta) = std::fs::metadata(&path) {
+                if let Ok(mt) = meta.modified() {
+                    if last != Some(mt) {
+                        last = Some(mt);
+                        if let Ok(content) = std::fs::read_to_string(&path) {
+                            let _ = app.emit("user-css://changed", content);
+                        }
+                    }
+                }
+            }
+            std::thread::sleep(std::time::Duration::from_millis(500));
+        }
+    });
+}
+
+#[tauri::command]
+fn set_focus_lock(app: AppHandle, locked: bool) {
+    if let Some(w) = app.get_webview_window("main") {
+        attach::set_no_activate(&w, locked);
+    }
+}
+
+#[tauri::command]
+fn get_user_css_path(app: AppHandle) -> String {
+    css_path(&app)
+        .map(|p| p.to_string_lossy().to_string())
+        .unwrap_or_default()
 }
 
 #[tauri::command]
@@ -147,9 +192,16 @@ pub fn run() {
             };
             app.manage(db_state);
 
+            if let Some(w) = app.get_webview_window("main") {
+                attach::set_no_activate(&w, true);
+            }
+            start_css_watch(handle.clone());
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            set_focus_lock,
+            get_user_css_path,
             get_mapping,
             set_mapping,
             get_gamepads,

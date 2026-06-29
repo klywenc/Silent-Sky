@@ -6,6 +6,7 @@
     <title>SilentSky</title>
     <link rel="stylesheet" href="/src/styles/base.css" />
     <link rel="stylesheet" href="/src/styles/theme.css" />
+    <style id="user-css"></style>
   </head>
   <body>
     <div id="overlay" class="overlay">
@@ -13,6 +14,7 @@
         <span class="toolbar__title" data-tauri-drag-region>SilentSky</span>
         <div class="toolbar__actions">
           <button id="btn-move" class="tbtn" title="Move window (hold &amp; drag)">✥</button>
+          <button id="btn-lock" class="tbtn is-on" title="Focus lock: game keeps focus (unlock to type)">🔒</button>
           <button id="btn-theme" class="tbtn" title="Toggle light/dark theme">☀</button>
           <button id="btn-click" class="tbtn" title="Toggle click-through (F8)">◉</button>
           <button id="btn-settings" class="tbtn" title="Settings (F9)">⚙</button>
@@ -86,6 +88,17 @@
           <span class="settings__hint">dumps schema + folders</span>
         </div>
         <pre id="db-diag" class="db-diag"></pre>
+
+        <h3 class="settings__section">Custom CSS</h3>
+        <p class="settings__hint">
+          Open <code>user.css</code> in your editor and save — the overlay updates
+          live, without taking focus from the game. Override theme variables or any
+          rule.
+        </p>
+        <div class="settings__row">
+          <button id="css-open" class="btn">Open CSS file</button>
+          <span id="css-path" class="muted"></span>
+        </div>
       </section>
     </div>
 

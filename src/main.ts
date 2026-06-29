@@ -1,5 +1,7 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { listen } from "@tauri-apps/api/event";
+import { invoke } from "@tauri-apps/api/core";
+import { openPath } from "@tauri-apps/plugin-opener";
 import { IIDX_SP, MOCK_KEYMAP, MOCK_SCRATCH } from "./config";
 import { ControllerView } from "./controller";
 import { ScoresView } from "./scores";
@@ -103,11 +105,25 @@ function applyTheme(light: boolean) {
   localStorage.setItem("theme", light ? "light" : "dark");
 }
 
+const userCss = document.getElementById("user-css")!;
+void listen<string>("user-css://changed", (e) => {
+  userCss.textContent = e.payload;
+});
+
 const btnMove = document.getElementById("btn-move")!;
+const btnLock = document.getElementById("btn-lock")!;
 const btnTheme = document.getElementById("btn-theme")!;
 const btnClick = document.getElementById("btn-click")!;
 const btnSettings = document.getElementById("btn-settings")!;
 const btnBack = document.getElementById("btn-back")!;
+
+let focusLocked = true;
+btnLock.addEventListener("click", () => {
+  focusLocked = !focusLocked;
+  void invoke("set_focus_lock", { locked: focusLocked });
+  btnLock.classList.toggle("is-on", focusLocked);
+  btnLock.textContent = focusLocked ? "🔒" : "🔓";
+});
 
 btnMove.addEventListener("pointerdown", () => void appWindow.startDragging());
 btnTheme.addEventListener("click", () =>
@@ -118,3 +134,13 @@ btnSettings.addEventListener("click", () => document.body.classList.toggle("show
 btnBack.addEventListener("click", () => document.body.classList.remove("show-settings"));
 
 applyTheme(localStorage.getItem("theme") === "light");
+
+const cssOpen = document.getElementById("css-open")!;
+const cssPath = document.getElementById("css-path")!;
+void invoke<string>("get_user_css_path").then((p) => {
+  cssPath.textContent = p;
+});
+cssOpen.addEventListener("click", async () => {
+  const p = await invoke<string>("get_user_css_path");
+  if (p) await openPath(p);
+});
